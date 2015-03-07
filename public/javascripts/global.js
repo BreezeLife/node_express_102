@@ -12,11 +12,18 @@ $(document).ready(function(){
     //Populate the user table on initial page load: call the table-filling method
     populateTable();
 
-    // Username link clink
+    // Username link click
     // * if you click <td a.linkshowuser>, trigger to call the showUserInfo function()
     $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
 
+    // * if you click add button you can add a new user
     $('#btnAddUser').on('click', addUser);
+
+    // Delete link click
+    // * if you click delete, triiger to call the deleteUser function()
+    // * when working with JQuery's 'on' method, in order to capture dynamically links,
+    // * you need to reference a static element on the page first, that's why our selector is table's tbody
+    $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
 
 });
 
@@ -42,7 +49,7 @@ function populateTable(){
             tableContent += '<tr>';
             tableContent += '<td><a href="#" class="linkshowuser" rel="' + this.username + '">' + this.username + '</a></td>';
             tableContent += '<td>' + this.email + '</td>';
-            tableContent += '<td><a href="#" class="linkshowuser" rel="' + this._id + '">delete</td>';
+            tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</td>';
             tableContent += '</tr>';
         });
 
@@ -125,7 +132,7 @@ function addUser(event){
                 $('#addUser fieldset input').val('');
 
                 // Update the table
-                populateTable();
+                populateTable();d
             }
             else {
 
@@ -142,5 +149,46 @@ function addUser(event){
         return false;
 
     }
+
+};
+
+// Delete user data
+function deleteUser(event){
+
+    event.preventDefault();
+
+    // Pop up a confirmation dialog
+    var confirmation = confirm("Are you sure you want to delete this user?");
+
+    // Check and make sure the user confirmed
+    if(confirmation == true){
+
+        // if they did, do our delete
+        $.ajax({
+            type: 'DELETE',
+            url: '/users/deleteuser/' + $(this).attr('rel')
+        }).done(function( response ) {
+
+            // Check for a successful (blank) response
+            if (response.msg === '') {
+            }
+            else {
+                alert('Error: ' + response.msg);
+            }
+
+            // Update the table
+            populateTable();
+
+        });
+
+    }
+    else{
+
+        // If they said no to the confirm, do nothing
+        return false;
+
+    }
+
+
 
 };

@@ -5,15 +5,20 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-// Database
+/* Database vis Mongoose
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/node102db');
-
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function (callback) {
     console.log("database is open successfully!");
 });
+*/
+
+// Database via MongoSkin
+var mongo = require('mongoskin');
+var db = mongo.db("mongodb://localhost:27017/node102db", {native_parser:true});
+
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
