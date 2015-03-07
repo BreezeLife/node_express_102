@@ -57,7 +57,9 @@ function populateTable(){
 function showUserInfo(event){
 
     // Prevent Link from Firing
+    // If this method is called, the default action of the event will not be triggered.
     event.preventDefault();
+
 
     // Retrieve username from link rel attribute
     var thisUserName = $(this).attr('rel');
@@ -86,6 +88,59 @@ function addUser(event){
     // Prevent Link from Firing
     event.preventDefault();
 
-    // Super basic validation
+    // Super basic validation - increase errorCount variable if any field are blank
+    // do form validation, compile the data and POST it via AJAX to adduser service
+    var erroCount = 0;
+    $('#addUser input').each(function(index, val){
+       if($(this).val() === '') { errorCount++; }
+    });
+
+    // Chceck and make sure errorCount's still at zero
+    if(erroCount === 0) {
+
+        // If it is, compile all the user info into one object
+        var newUser = {
+
+            'username': $('#addUser fieldset input#inputUserName').val(),
+            'email': $('#addUser fieldset input#inputUserEmail').val(),
+            'fullname': $('#addUser fieldset input#inputUserFullname').val(),
+            'age': $('#addUser fieldset input#inputUserAge').val(),
+            'location': $('#addUser fieldset input#inputUserLocation').val(),
+            'gender': $('#addUser fieldset input#inputUserGender').val()
+        }
+
+        // Use AJAX to post the object to our adduser service
+        $.ajax({
+            type: 'POST',
+            data: newUser,
+            url: '/users/adduser',
+            dataType: 'JSON'
+        }).done(function( response ){
+
+            // Check for successful (blank) response
+            // no error msg in response
+            if (response.msg === ''){
+
+                // Clear the form inputs
+                $('#addUser fieldset input').val('');
+
+                // Update the table
+                populateTable();
+            }
+            else {
+
+                // If something goes wroing, alert the error message that our service returned
+                alear('Error:' + response.msg);
+            }
+        });
+    }
+    // not complete all the form input box
+    else{
+
+        // If errorCount is more than 0, error out
+        alert('Please fill in all fields');
+        return false;
+
+    }
 
 };
