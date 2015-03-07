@@ -1,3 +1,10 @@
 # node_express_102
-a simple user management website by using node.js mongodb, mongoskin, express
 
+##Introduction
+A simple user management website by using node.js mongodb, mongoskin and express
+
+##Stack
+- Mongodb
+- Node.js
+- MongoSkin
+- Express
